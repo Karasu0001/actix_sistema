@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario</title>
+
+  <!-- reCAPTCHA -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+<h2>Registro de Usuario</h2>
+
+<form action="/crear_usuario" method="post" onsubmit="return validarFormulario();">
+
+    <label>Usuario:</label><br>
+  <input type="text" id="usuario" name="usuario" required><br><br>
+
+  <label>Email:</label><br>
+  <input type="email" id="email" name="email" required><br><br>
+
+  <label>Contraseña:</label><br>
+  <input type="password" id="pass1" name="password" required><br><br>
+
+  <label>Confirmar contraseña:</label><br>
+  <input type="password" id="pass2" required><br><br>
+
+
+  <!-- reCAPTCHA -->
+  <div class="g-recaptcha" data-sitekey="6LcwIVEsAAAAABOs6IWuN7x9H-09NfIPZIQEvwKL"></div><br>
+
+  <button type="submit">Enviar</button>
+</form>
+ <button onclick="location.href='/pantalla1'">
+    Ir a pantalla1
+    </button>
+<script>
+function validarFormulario() {
+  let u = document.getElementById("usuario").value;
+  let p1 = document.getElementById("pass1").value;
+  let p2 = document.getElementById("pass2").value;
+
+  let regex = /^[a-zA-Z0-9_]{4,}$/;
+
+  if (!regex.test(u)) {
+    alert("Usuario inválido (mínimo 4 caracteres, solo letras y números)");
+    return false;
+  }
+
+  if (p1 !== p2) {
+    alert("Las contraseñas no coinciden");
+    return false;
+  }
+
+  // Validar reCAPTCHA
+  let captcha = grecaptcha.getResponse();
+  if (captcha.length === 0) {
+    alert("Por favor verifica el reCAPTCHA");
+    return false;
+  }
+
+  return true;
+}
+</script>
+
+</body>
+</html>
