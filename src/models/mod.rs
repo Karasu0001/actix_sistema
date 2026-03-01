@@ -1,0 +1,1 @@
+pub mod usuario; // O como se llame tu archivo de modelo
