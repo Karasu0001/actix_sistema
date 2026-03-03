@@ -1,1 +1,1 @@
-pub mod usuario_controller; // Debe coincidir exactamente con el nombre del archivo en el disco
+pub mod usuario_controller;

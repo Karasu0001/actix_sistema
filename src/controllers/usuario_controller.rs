@@ -15,7 +15,7 @@ impl UsuarioController {
             .body(include_str!("../templates/usuarios.html"))
     }
 
-    // --- API ENDPOINTS ---
+    // API ENDPOINTS
 
     // GET /api/users (Listar todos o uno por ID)
     pub async fn dispatcher_get(
@@ -38,7 +38,7 @@ impl UsuarioController {
         pool: web::Data<PgPool>, 
         usuario: web::Json<Usuario>
     ) -> impl Responder {
-        // Validación básica manual (similar a validate_form)
+        // Validación 
         if usuario.usuario.trim().is_empty() || usuario.email.trim().is_empty() {
             return HttpResponse::Ok().json(json!({
                 "success": false,
@@ -51,7 +51,7 @@ impl UsuarioController {
 
         if !success {
             let mut errors = json!({});
-            // Si el error es de duplicado (identificado en el service)
+            
             if message.to_lowercase().contains("registrado") || message.contains("email") {
                 errors = json!({"email": message});
             }
