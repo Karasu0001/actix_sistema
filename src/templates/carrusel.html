@@ -3,270 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Carrusel | La Biblioteca Café</title>
+    <title>Libros | Galería Premium</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary-coffee: #4a3728;
-            --secondary-coffee: #2c1810;
-            --paper-light: #fcfaf7;
+            --primary-dark: #0a0a0a;
+            --accent-cyan: #00f2ff;
             --accent-gold: #c5a059;
-            --border-color: #e2d1c3;
+            --library-brown: #2c1810;
+            --text-light: #e2d1c3;
         }
 
         body {
             font-family: 'Georgia', serif;
-            background-color: var(--paper-light);
-            color: var(--secondary-coffee);
+            /* Degradado oscuro similar al de la imagen de referencia */
+            background: radial-gradient(circle at top, #1a2a2d 0%, #050505 100%);
+            color: var(--text-light);
             margin: 0;
-            padding-bottom: 50px;
+            min-height: 100vh;
         }
 
+        /* Navbar estilizado */
         nav {
             padding: 20px;
-            background-color: #fff;
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 252, 247, 0.1);
             text-align: center;
         }
         nav a {
-            color: var(--primary-coffee);
+            color: var(--accent-gold);
             text-decoration: none;
-            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
         }
 
         .header-section {
             text-align: center;
-            margin-bottom: 40px;
+            margin: 50px 0;
         }
 
         .header-section h2 {
-            font-size: 2.5rem;
-            color: var(--secondary-coffee);
-            margin-bottom: 5px;
+            font-size: 3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: white;
+            text-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
         }
 
-        .carousel-card {
-            background: white;
-            padding: 15px;
-            border: 12px solid var(--primary-coffee);
-            border-image: outset;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            border-radius: 4px;
+      
+        .carousel-container-custom {
+            position: relative;
+            padding: 40px;
+           
+            border-top: 2px solid var(--accent-cyan);
+            box-shadow: 0 -15px 30px -10px rgba(0, 242, 255, 0.3);
+        }
+
+        .carousel-item {
+            text-align: center;
+        }
+
+        .book-frame {
+            display: inline-block;
+            position: relative;
+            padding: 10px;
+            background: linear-gradient(145deg, #1a1a1a, #000);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            transition: all 0.4s ease;
         }
 
         .carousel-item img {
-            height: 500px;
+            height: 450px;
+            width: 300px;
             object-fit: cover;
-            filter: sepia(0.2) contrast(1.1);
-            cursor: zoom-in; /* Cursor de lupa para indicar que se puede ampliar */
+            border-radius: 10px;
+            transition: transform 0.5s;
         }
 
+        /* Efecto de resplandor */
+        .carousel-item.active .book-frame {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 50px rgba(0, 242, 255, 0.4);
+        }
+
+        /* Botón Flotante Estilo Pluma */
         .fab {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            width: 70px;
-            height: 70px;
-            background-color: #8b2626;
-            color: white;
+            width: 65px;
+            height: 65px;
+            background: black;
+            color: var(--accent-cyan);
+            border: 2px solid var(--accent-cyan);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            border: 2px solid #5a1a1a;
+            font-size: 24px;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: 0.3s;
             z-index: 1000;
         }
         .fab:hover {
-            transform: scale(1.1) rotate(10deg);
-            color: white;
+            background: var(--accent-cyan);
+            color: black;
+            transform: scale(1.1);
         }
 
+        
         .custom-modal {
-            background-color: var(--paper-light);
-            border: 2px solid var(--primary-coffee);
+            background: #0a0a0a;
+            color: white;
+            border: 1px solid var(--accent-cyan);
             border-radius: 0;
         }
 
-        .modal-header {
-            border-bottom: 1px dashed var(--primary-coffee);
-            background-color: white;
-        }
-
         .upload-area {
-            border: 2px dashed var(--accent-gold);
-            padding: 40px;
-            text-align: center;
-            cursor: pointer;
-            background-color: rgba(197, 160, 89, 0.05);
-            transition: 0.3s;
-        }
-
-        .upload-area:hover {
-            background-color: rgba(197, 160, 89, 0.1);
+            border: 2px dashed rgba(0, 242, 255, 0.3);
+            background: rgba(0, 242, 255, 0.05);
+            padding: 50px;
+            border-radius: 10px;
         }
 
         .btn-save {
-            background-color: var(--primary-coffee);
-            color: white;
+            background: var(--accent-cyan);
+            color: black;
+            font-weight: bold;
             border: none;
-            padding: 10px 25px;
-            border-radius: 4px;
-        }
-
-        /* Estilo para el botón deshabilitado */
-        .btn-save:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        
-        .preview-wrapper img {
-            max-width: 100%;
-            max-height: 200px;
-            border: 5px solid white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        /* Modal para ver imagen completa */
-        #fullImageModal .modal-content {
-            background: transparent;
-            border: none;
-        }
-        #fullImageModal img {
-            border: 10px solid white;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            padding: 10px 30px;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="/pantalla1">Inicio</a> > 
-        <a href="/pantalla2">Catálogo</a> > 
-        <strong>Galería Carrusel</strong>
+        <a href="/p1">Inicio</a> &nbsp; | &nbsp; 
+        <a href="/pantalla2">Catálogo</a> &nbsp; | &nbsp; 
+        <span style="color: white">Nuevas Adquisiciones</span>
     </nav>
 
-    <div class="container">
-        <div class="header-section">
-            <h2>Anuncios de la Biblioteca</h2>
-            <p class="text-muted italic"><i>"Un café para despertar, una imagen para soñar"</i></p>
-            <hr style="width: 100px; margin: 20px auto; border-color: var(--accent-gold);">
-        </div>
+    <div class="header-section">
+        <small style="color: var(--accent-cyan); letter-spacing: 3px;">DISPONIBLE AHORA</small>
+        <h2>Selecciona tu Obra</h2>
+        <p style="opacity: 0.7;">Explora las joyas literarias ocultas en nuestra bóveda</p>
+    </div>
 
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="carousel-card">
-                    <div id="mainCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
-                        <div class="carousel-inner" id="carouselContainer">
-                            {{items_carrusel}}
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon p-4" style="background-color: var(--secondary-coffee); border-radius: 50%;"></span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon p-4" style="background-color: var(--secondary-coffee); border-radius: 50%;"></span>
-                        </button>
+    <div class="container-fluid carousel-container-custom">
+        <div id="mainCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            <div class="carousel-inner" id="carouselContainer">
+                
+                <div class="carousel-item active">
+                    <div class="book-frame">
+                        <img src="https://images.unsplash.com/photo-1543004629-141a44568e8e?auto=format&fit=crop&q=80&w=300&h=450" alt="Libro 1">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-white">El Misterio de Ateneo</h3>
+                        <span class="badge bg-info text-dark">MISTERIO</span>
                     </div>
                 </div>
+
+                <div class="carousel-item">
+                    <div class="book-frame">
+                        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=300&h=450" alt="Libro 2">
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-white">Crónicas de Papel</h3>
+                        <span class="badge bg-warning text-dark">HISTÓRICO</span>
+                    </div>
+                </div>
+
             </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+                <i class="fas fa-chevron-left fa-2xl" style="color: var(--accent-cyan)"></i>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+                <i class="fas fa-chevron-right fa-2xl" style="color: var(--accent-cyan)"></i>
+            </button>
         </div>
     </div>
 
     <button class="fab" data-bs-toggle="modal" data-bs-target="#uploadModal">
-        <i class="fas fa-feather-pointed"></i>
+        <i class="fas fa-plus"></i>
     </button>
 
     <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form method="POST" action="/carrusel" enctype="multipart/form-data" class="modal-content custom-modal">
-                <div class="modal-header">
-                    <h5 class="modal-title">Añadir a la Colección</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body text-center">
+                <div class="modal-body text-center p-5">
                     <div class="upload-area" id="dropZone" onclick="document.getElementById('imagenInput').click();">
                         <input type="file" name="imagen" id="imagenInput" accept="image/*" required hidden onchange="previewImage(event)">
-                        
-                        <div id="uploadContent">
-                            <i class="fas fa-book-open mb-3" style="font-size: 3rem; color: var(--accent-gold);"></i>
-                            <p>Haz clic para seleccionar una ilustración</p>
-                            <small class="text-muted">JPG, PNG o WEBP</small>
-                        </div>
-
-                        <div id="previewContainer" class="preview-wrapper d-none">
-                            <img id="previewImg" src="" alt="Vista previa">
-                            <p class="mt-2"><small id="fileNameDisplay">Haga clic para cambiar</small></p>
-                        </div>
+                        <i class="fas fa-cloud-upload-alt mb-3" style="font-size: 3rem; color: var(--accent-cyan);"></i>
+                        <h5 class="text-white">REGISTRAR NUEVA OBRA</h5>
+                        <p class="small opacity-50">Sube la portada del libro para añadirla a la bóveda</p>
                     </div>
-                </div>
-
-                <div class="modal-footer" style="border-top: 1px dashed var(--primary-coffee);">
-                    <button type="button" class="btn btn-link text-decoration-none" style="color: var(--primary-coffee)" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" id="submitBtn" class="btn-save" disabled>Registrar Imagen</button>
+                    <div class="mt-4">
+                        <button type="submit" id="submitBtn" class="btn btn-save" disabled>Confirmar Adquisición</button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="modal fade" id="fullImageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body p-0 text-center">
-                    <img id="imgFull" src="" class="img-fluid" alt="Imagen Completa">
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 1. Vista previa y validación
         function previewImage(event) {
-            const input = event.target;
-            const preview = document.getElementById('previewImg');
-            const container = document.getElementById('previewContainer');
-            const content = document.getElementById('uploadContent');
             const submitBtn = document.getElementById('submitBtn');
-            const file = input.files[0];
-
-            if (file) {
-                // Tipos permitidos
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
-                
-                if (!allowedTypes.includes(file.type)) {
-                    alert("¡Error! Por favor selecciona un archivo de imagen válido (JPG, PNG o WEBP).");
-                    input.value = ''; // Limpiar input
-                    submitBtn.disabled = true;
-                    return;
-                }
-
-                // Si es válido, mostrar vista previa y habilitar botón
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    container.classList.remove('d-none');
-                    content.classList.add('d-none');
-                    submitBtn.disabled = false;
-                }
-                reader.readAsDataURL(file);
+            if (event.target.files.length > 0) {
+                submitBtn.disabled = false;
+                submitBtn.style.boxShadow = "0 0 20px #00f2ff";
             }
         }
-
-        // 2. Abrir imagen completa al hacer clic
-        document.getElementById('carouselContainer').addEventListener('click', function(e) {
-            if(e.target.tagName === 'IMG') {
-                const fullModal = new bootstrap.Modal(document.getElementById('fullImageModal'));
-                document.getElementById('imgFull').src = e.target.src;
-                fullModal.show();
-            }
-        });
     </script>
 </body>
 </html>
