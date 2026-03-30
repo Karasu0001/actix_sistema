@@ -236,15 +236,15 @@
         document.getElementById('formLogin').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const captchaResponse = "bypass_local";
-            // const captchaResponse = grecaptcha.getResponse();
+            // const captchaResponse = "bypass_local";
+            const captchaResponse = grecaptcha.getResponse();
             const alertError = document.getElementById('alertError');
 
-            // if (!captchaResponse) {
-            //     alertError.innerText = "Por favor, confirma que no eres un robot.";
-            //     alertError.classList.remove('d-none');
-            //     return;
-            // }
+            if (!captchaResponse) {
+                alertError.innerText = "Por favor, confirma que no eres un robot.";
+                alertError.classList.remove('d-none');
+                return;
+            }
 
             const btnSubmit = document.getElementById('btnSubmit');
             const btnText = document.getElementById('btnText');
@@ -279,13 +279,13 @@
                     alertError.innerText = result.msg;
                     alertError.classList.remove('d-none');
                     resetBtn();
-                    // grecaptcha.reset();
+                     grecaptcha.reset();
                 }
             } catch (error) {
                 alertError.innerText = "Error de conexión con el servidor.";
                 alertError.classList.remove('d-none');
                 resetBtn();
-                // grecaptcha.reset();
+                 grecaptcha.reset();
             }
 
             function resetBtn() {

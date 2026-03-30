@@ -94,12 +94,12 @@ pub async fn login_api_dispatcher(
     }
 
     // 2. Validar reCAPTCHA
-    // if data.captcha.is_empty() || !LoginService::verify_recaptcha(&data.captcha).await {
-    //     return HttpResponse::Ok().json(json!({
-    //         "success": false,
-    //         "msg": "Verificación de reCAPTCHA fallida. Inténtalo de nuevo."
-    //     }));
-    // }
+    if data.captcha.is_empty() || !LoginService::verify_recaptcha(&data.captcha).await {
+        return HttpResponse::Ok().json(json!({
+            "success": false,
+            "msg": "Verificación de reCAPTCHA fallida. Inténtalo de nuevo."
+        }));
+    }
 
     // 3. Autenticar usuario
     match LoginService::authenticate_user(&pool, &data.correo, &data.password).await {
