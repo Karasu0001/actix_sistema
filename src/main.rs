@@ -10,6 +10,7 @@ use actix_files as fs;
 use render::init_templates;
 use sqlx::postgres::PgPoolOptions;
 use middleware::auth_middleware::AuthMiddleware;
+use std::env;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -17,15 +18,19 @@ async fn main() -> std::io::Result<()> {
 
     let tera = init_templates();
 
-    //DB
-    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL no definida");
+    // DB
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL no definida");
 
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(&database_url).await
         .expect("No se pudo conectar a la DB");
 
-    println!("🚀 Servidor iniciado en http://localhost:8080/");
+    // Puerto dinámico para Render
+    let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
+    let address = format!("0.0.0.0:{}", port);
+
+    println!("🚀 Servidor iniciado en http://{}", address);
 
     HttpServer::new(move || {
         App::new()
@@ -36,6 +41,7 @@ async fn main() -> std::io::Result<()> {
             .service(fs::Files::new("/static", "./static").show_files_listing())
             .configure(router::config)
     })
-        .bind(("127.0.0.1", 8080))?
-        .run().await
+    .bind(&address)? // Escuchar en 0.0.0.0
+    .run()
+    .await
 }
