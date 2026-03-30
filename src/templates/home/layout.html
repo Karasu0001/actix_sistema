@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{titulo}}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --primary-coffee: #4a3728;
+            --secondary-coffee: #2c1810;
+            --paper-light: #fcfaf7;
+            --accent-gold: #c5a059;
+            --border-color: #e2d1c3;
+            --sidebar-width: 260px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Georgia', serif;
+            background-color: #f4f1ee;
+            color: var(--secondary-coffee);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR MEJORADO --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--secondary-coffee);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+            text-align: center;
+        }
+
+        .avatar-logo {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-gold);
+            color: var(--secondary-coffee);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.2rem;
+            margin: 0 auto 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .context-title {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: var(--accent-gold);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .nav-scroll-area {
+            flex-grow: 1;
+            padding: 1.5rem 0;
+            overflow-y: auto;
+        }
+
+        .nav-group-label {
+            padding: 0 1.5rem 0.5rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Estilo para los links del menú */
+        .nav-link-custom {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            margin-bottom: 4px;
+        }
+
+        .nav-link-custom:hover {
+            color: white;
+            background: rgba(197, 160, 89, 0.1);
+            border-left-color: var(--accent-gold);
+        }
+
+        .nav-link-custom i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-link-custom.active {
+            color: white;
+            background: rgba(197, 160, 89, 0.15);
+            border-left-color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            transition: var(--transition);
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        /* --- TOPBAR / BREADCRUMB BAR --- */
+        .topbar {
+            background: white;
+            height: 70px;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .breadcrumb-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+
+        .breadcrumb-item-custom {
+            color: var(--primary-coffee);
+            font-weight: 500;
+        }
+
+        .user-profile-trigger {
+            padding: 5px 12px;
+            border-radius: 50px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .user-profile-trigger:hover {
+            background: var(--paper-light);
+            border-color: var(--border-color);
+        }
+
+        .avatar-sm {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 2px solid white;
+        }
+
+        /* --- CARDS Y CONTENIDO --- */
+        .body-container {
+            padding: 2rem;
+        }
+
+        .library-card {
+            background: white;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            padding: 2rem;
+        }
+
+        .btn-coffee {
+            background-color: var(--primary-coffee);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-coffee:hover {
+            background-color: var(--secondary-coffee);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                left: -var(--sidebar-width);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+        }
+
+        /* Animación del chevron al expandir */
+        .nav-link-custom[aria-expanded="true"] .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        /* Wrapper del dropdown */
+        .nav-dropdown-wrapper {
+            margin-bottom: 0.25rem;
+        }
+
+        /* --- OVERLAY PARA MOBILE --- */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Animación del chevron */
+        .fa-chevron-down {
+            transition: transform 0.3s ease;
+        }
+
+        /* Efecto hover mejorado en navegación */
+        .nav-link-custom {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link-custom::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: rgba(197, 160, 89, 0.1);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+
+        .nav-link-custom:hover::before {
+            width: 100%;
+        }
+
+        /* Estilos para el menú desplegable padre */
+        .nav-link-custom[data-bs-toggle="collapse"] {
+            font-weight: 600;
+        }
+
+        .nav-link-custom[data-bs-toggle="collapse"].active {
+            background: rgba(197, 160, 89, 0.2);
+        }
+
+        /* Sidebar para móvil */
+        @media (max-width: 992px) {
+            .sidebar {
+                left: calc(-1 * var(--sidebar-width));
+                box-shadow: none;
+            }
+
+            .sidebar.active {
+                left: 0;
+                box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="avatar-logo">RS</div>
+            <div class="context-text">
+                <span class="context-title">Sistema Actix</span>
+            </div>
+        </div>
+
+        <div class="nav-scroll-area">
+            <div class="nav-group-label">Navegación</div>
+
+            {% if datos_menu %}
+            {% for menu in datos_menu %}
+            <div class="nav-dropdown-wrapper mb-2">
+                <a class="nav-link-custom d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+                    href="#collapse_{{ menu.id_html }}" role="button" aria-expanded="false">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-folder"></i>
+                        <span>{{ menu.titulo }}</span>
+                    </div>
+                    <i class="fas fa-chevron-down" style="font-size: 0.75rem;"></i>
+                </a>
+
+                <div class="collapse" id="collapse_{{ menu.id_html }}">
+                    <div style="padding-left: 1rem;">
+                        {% for sub in menu.submodulos %}
+                        <a href="{{ sub.ruta }}" class="nav-link-custom" style="padding-left: 2.5rem;">
+                            <i class="fas fa-circle" style="font-size: 6px;"></i>
+                            <span>{{ sub.nombre }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="text-center text-muted p-3" style="font-size: 0.85rem;">
+                No hay menús disponibles
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="sidebar-footer p-3">
+            <div class="small text-center" style="color: rgba(255,255,255,0.3)">v1.0.0 Rust Core</div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <header class="topbar shadow-sm">
+            <div class="breadcrumb-container">
+                <button class="btn d-lg-none p-0 me-2" id="btnToggle">
+                    <i data-lucide="menu" class="text-dark"></i>
+                </button>
+                <div class="d-none d-md-flex align-items-center gap-2">
+                    <a href="/" class="text-muted text-decoration-none d-flex align-items-center transition-hover"
+                        title="Ir al Inicio">
+                        <i data-lucide="home" size="18"></i>
+                    </a>
+
+                    <span class="text-muted">/</span>
+
+                    <i data-lucide="folder-open" size="18" class="text-muted"></i>
+                    <span class="breadcrumb-item-custom">{{breadcrumbs_placeholder}}</span>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <div class="user-profile-trigger d-flex align-items-center gap-2" id="userMenu"
+                    data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+
+                    <div class="avatar-sm"
+                        style="background: linear-gradient(135deg, var(--accent-gold), #e6c281); color: white; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;">
+                        {{user_iniciales}}
+                    </div>
+
+                    <div class="d-none d-sm-block">
+                        <div
+                            style="font-size: 0.85rem; font-weight: 700; color: var(--secondary-coffee); line-height: 1.2;">
+                            {{user_nombre}}</div>
+                        <div
+                            style="font-size: 0.7rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 600;">
+                            En línea</div>
+                    </div>
+                    <i data-lucide="chevron-down" size="16" class="ms-1 text-muted"></i>
+                </div>
+
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3 p-2" aria-labelledby="userMenu">
+                    <li class="px-3 py-2">
+                        <p class="mb-0 text-muted" style="font-size: 0.75rem;">Cuenta activa</p>
+                        <p class="mb-0 fw-bold small">{{user_email}}</p>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item rounded-2 py-2" href="/perfil"><i
+                                class="fas fa-user-edit me-2 opacity-50"></i> Mi Perfil</a></li>
+                    <li><a class="dropdown-item rounded-2 py-2" href="#"><i class="fas fa-cog me-2 opacity-50"></i>
+                            Ajustes</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item rounded-2 py-2 text-danger" href="/logout"><i
+                                class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </header>
+
+        <main class="body-container">
+            <div class="library-card">
+                {{ content | safe }}
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicializar iconos de Lucide y FontAwesome
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link-custom');
+            const btnToggle = document.getElementById('btnToggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            // --- LÓGICA DE NAVEGACIÓN Y MENÚS DESPLEGABLES ---
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                const linkPath = link.getAttribute('href');
+
+                // Verificar si el link actual coincide con la ruta
+                if (linkPath && linkPath !== '#' && (currentPath === linkPath || currentPath.startsWith(linkPath + '/'))) {
+                    link.classList.add('active');
+
+                    // Si el link activo está dentro de un submenú (collapse), ábrelo
+                    const parentCollapse = link.closest('.collapse');
+                    if (parentCollapse) {
+                        parentCollapse.classList.add('show'); // Clase de Bootstrap para mostrar
+
+                        // Cambiar el estado del botón disparador para que la flecha rote
+                        const trigger = document.querySelector(`[href="#${parentCollapse.id}"]`);
+                        if (trigger) {
+                            trigger.setAttribute('aria-expanded', 'true');
+                            trigger.classList.add('active');
+                        }
+                    }
+                }
+            });
+
+            // --- TOGGLE SIDEBAR MOBILE ---
+            if (btnToggle && sidebar && overlay) {
+                btnToggle.addEventListener('click', () => {
+                    sidebar.classList.add('active');
+                    overlay.classList.add('active');
+                });
+
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+
+                // Cerrar sidebar al hacer click en un link (móvil)
+                navLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (window.innerWidth < 992) {
+                            sidebar.classList.remove('active');
+                            overlay.classList.remove('active');
+                        }
+                    });
+                });
+            }
+
+            // --- ANIMACIÓN DE CHEVRON AL EXPANDIR/CONTRAER ---
+            const collapseToggles = document.querySelectorAll('[data-bs-toggle="collapse"]');
+            collapseToggles.forEach(toggle => {
+                const targetId = toggle.getAttribute('href').substring(1);
+                const targetCollapse = document.getElementById(targetId);
+
+                if (targetCollapse) {
+                    targetCollapse.addEventListener('show.bs.collapse', () => {
+                        const chevron = toggle.querySelector('.fa-chevron-down');
+                        if (chevron) {
+                            chevron.style.transform = 'rotate(180deg)';
+                        }
+                    });
+
+                    targetCollapse.addEventListener('hide.bs.collapse', () => {
+                        const chevron = toggle.querySelector('.fa-chevron-down');
+                        if (chevron) {
+                            chevron.style.transform = 'rotate(0deg)';
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<section class="hero-container library-card">
+    <link rel="stylesheet" href="/static/css/home/index.css">
+
+    <div class="hero-content header-section">
+        <p class="hero-label" style="color: var(--accent-gold); font-weight: bold; letter-spacing: 2px;">RUST ACTIX FRAMEWORK</p>
+        <h1 class="hero-title" style="color: var(--primary-coffee); font-size: 2.5rem; margin-bottom: 10px;">Hola Mundo</h1>
+        <p class="hero-subtitle" style="font-style: italic; color: #666;">Construye tu propia arquitectura segura y veloz desde cero.</p>
+    </div>
+
+    <div class="status-card" style="border-top: 2px solid var(--border-color); padding-top: 20px; margin-top: 30px;">
+        <div class="status-header d-flex align-items-center gap-2 mb-3">
+            <span class="status-number" style="background-color: var(--primary-coffee); color: white; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">1</span>
+            <h3 style="margin: 0; color: var(--secondary-coffee); font-size: 1.2rem;">Estado de la Base de Datos</h3>
+        </div>
+        <div class="status-body" style="background-color: var(--paper-light); padding: 15px; border-radius: 4px; border-left: 4px solid var(--accent-gold);">
+            <p><strong>Estado:</strong> <span class="badge {{EstadoClase}}" style="font-size: 0.9em;">{{Estado}}</span></p>
+            <p><strong>Servidor:</strong> Neon Postgres (SQLx)</p>
+            <p class="mb-0"><strong>Fecha BD:</strong> {{servidor_fecha}}</p>
+        </div>
+    </div>
+</section>

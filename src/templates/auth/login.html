@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Actix</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Color crema de fondo simulando un latte */
+            background-color: #F5EBE1; 
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .login-card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(92, 64, 51, 0.15); /* Sombra tono café */
+        }
+
+        /* Sección Izquierda - Temática Cafetería */
+        .login-left {
+            /* Imagen de fondo de cafetería con un overlay oscuro para que resalte el texto */
+            background: linear-gradient(rgba(62, 39, 35, 0.85), rgba(62, 39, 35, 0.75)), 
+                        url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') center/cover;
+            color: #F5EBE1;
+            padding: 3.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .login-left h4 {
+            color: #D7CCC8;
+            font-weight: 500;
+        }
+
+        .login-left h1 {
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: 10px;
+        }
+
+        .login-left p {
+            line-height: 1.6;
+        }
+
+        /* Sección Derecha - Formulario */
+        .login-right {
+            padding: 3.5rem;
+            background-color: #ffffff;
+        }
+
+        .login-right h2 {
+            font-weight: 600;
+            color: #3E2723; /* Café oscuro */
+        }
+
+        /* Estilos de los inputs */
+        .input-group-text {
+            background-color: #F8F5F2;
+            color: #8D6E63; /* Tono café medio */
+            border-radius: 10px 0 0 10px;
+        }
+
+        .form-control {
+            background-color: #F8F5F2;
+            border-radius: 0 10px 10px 0;
+            padding: 0.75rem 1rem;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            background-color: #FFF;
+            border: 1px solid #D7CCC8;
+        }
+
+        /* Enlaces y textos clickeables */
+        .text-coffee {
+            color: #6D4C41 !important;
+        }
+
+        a.text-coffee:hover {
+            color: #3E2723 !important;
+        }
+
+        /* Botón de Enviar */
+        .btn-sign-in {
+            background-color: #5D4037; /* Marrón café */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-sign-in:hover {
+            background-color: #3E2723; /* Marrón más oscuro al pasar el mouse */
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(93, 64, 55, 0.3);
+        }
+
+        .btn-sign-in:disabled {
+            background-color: #A1887F;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Spinner de carga */
+        .loader {
+            display: none;
+            border: 2px solid #F5EBE1;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container d-flex justify-content-center px-3">
+        <div class="card login-card animate__animated animate__zoomIn" style="max-width: 900px; width: 100%;">
+            <div class="row g-0">
+                <div class="col-md-5 login-left">
+                    <div class="login-content">
+                        <h4 class="animate__animated animate__fadeInLeft"><i data-lucide="coffee" class="me-2 mb-1"></i>Coffee POS</h4>
+                        <h1 class="animate__animated animate__fadeInLeft animate__delay-1s">BIENVENIDO</h1>
+                        <h5 class="fw-normal opacity-75 animate__animated animate__fadeInLeft animate__delay-1s">
+                            SISTEMA DE GESTIÓN</h5>
+                        <p class="mt-4 opacity-75 animate__animated animate__fadeInLeft animate__delay-2s small">
+                            Plataforma integral diseñada para administrar pedidos, controlar el inventario de insumos y gestionar el acceso de los baristas y cajeros de manera eficiente y segura.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-7 login-right">
+                    <div class="text-center mb-4">
+                        <h2>Inicio de Sesión</h2>
+                        <p class="text-muted small">Ingresa tus credenciales para comenzar tu turno</p>
+                    </div>
+
+                    <div id="alertError" class="alert alert-danger d-none animate__animated animate__shakeX border-0"
+                        role="alert" style="background-color: #FFEBEE; color: #C62828;"></div>
+
+                    <form id="formLogin">
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text border-0">
+                                    <i data-lucide="user" size="18"></i>
+                                </span>
+                                <input type="email" class="form-control border-0" id="correo"
+                                    placeholder="Correo Electrónico" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text border-0">
+                                    <i data-lucide="lock" size="18"></i>
+                                </span>
+                                <input type="password" class="form-control border-0" id="password"
+                                    placeholder="Contraseña" required>
+                                <span class="input-group-text border-0 text-coffee" id="togglePassword"
+                                    style="cursor:pointer; border-radius: 0 10px 10px 0;">
+                                    <i data-lucide="eye" size="18" id="eyeIcon"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe" style="cursor: pointer;">
+                                <label class="form-check-label small text-muted" for="rememberMe" style="cursor: pointer;">
+                                    Recordar usuario
+                                </label>
+                            </div>
+                            <a href="#" class="small text-decoration-none fw-semibold text-coffee">¿Olvidaste la contraseña?</a>
+                        </div>
+
+                        <div class="d-flex justify-content-center mb-4">
+                            <div class="g-recaptcha" data-sitekey="6Le25H4sAAAAALCRuSXI4CRrKzaXF8eUPhY3-2-a"></div>
+                        </div>
+
+                        <button type="submit"
+                            class="btn btn-sign-in w-100 d-flex align-items-center justify-content-center gap-2"
+                            id="btnSubmit">
+                            <div class="loader" id="loader"></div>
+                            <span id="btnText">Ingresar al Sistema</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        // Inicializar iconos
+        lucide.createIcons();
+
+        // Lógica para mostrar/ocultar contraseña
+        const togglePassword = document.querySelector('#togglePassword');
+        const passwordInput = document.querySelector('#password');
+        const eyeIcon = document.querySelector('#eyeIcon');
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            const iconName = type === 'password' ? 'eye' : 'eye-off';
+            eyeIcon.setAttribute('data-lucide', iconName);
+            lucide.createIcons();
+        });
+
+        // Lógica de validación y envío al servidor
+        document.getElementById('formLogin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const captchaResponse = "bypass_local";
+            // const captchaResponse = grecaptcha.getResponse();
+            const alertError = document.getElementById('alertError');
+
+            // if (!captchaResponse) {
+            //     alertError.innerText = "Por favor, confirma que no eres un robot.";
+            //     alertError.classList.remove('d-none');
+            //     return;
+            // }
+
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnText = document.getElementById('btnText');
+            const loader = document.getElementById('loader');
+
+            btnSubmit.disabled = true;
+            btnText.innerText = 'Validando...';
+            loader.style.display = 'block';
+            alertError.classList.add('d-none');
+
+            const data = {
+                correo: document.getElementById('correo').value,
+                password: document.getElementById('password').value,
+                captcha: captchaResponse
+            };
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    btnSubmit.style.background = '#388E3C'; // Verde éxito
+                    btnText.innerText = '¡Acceso concedido!';
+                    loader.style.display = 'none';
+                    setTimeout(() => { window.location.href = '/'; }, 800);
+                } else {
+                    alertError.innerText = result.msg;
+                    alertError.classList.remove('d-none');
+                    resetBtn();
+                    // grecaptcha.reset();
+                }
+            } catch (error) {
+                alertError.innerText = "Error de conexión con el servidor.";
+                alertError.classList.remove('d-none');
+                resetBtn();
+                // grecaptcha.reset();
+            }
+
+            function resetBtn() {
+                btnSubmit.disabled = false;
+                btnText.innerText = 'Ingresar al Sistema';
+                loader.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

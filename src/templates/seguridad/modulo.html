@@ -1,0 +1,640 @@
+<link rel="stylesheet" href="/static/css/users/users.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    /* --- Contenedor Principal --- */
+    .user-dashboard {
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* --- BOTONES PRINCIPALES --- */
+    .btn-primary {
+        background-color: var(--primary-coffee);
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(74, 48, 34, 0.2);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--secondary-coffee);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(74, 48, 34, 0.3);
+    }
+
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .header-actions h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--secondary-coffee);
+        margin: 0;
+    }
+
+    /* --- Search Pill (Estilo Google) --- */
+    .google-pill-container {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border: 1px solid var(--border-color);
+        padding: 6px 15px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .google-pill-container:focus-within {
+        border-color: var(--accent-gold);
+        box-shadow: 0 4px 12px rgba(197, 160, 89, 0.15);
+    }
+
+    .main-search-part {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+    }
+
+    .search-icon-muted {
+        color: #a0aec0;
+        margin-right: 10px;
+    }
+
+    #searchInput {
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 0.9rem;
+        color: var(--secondary-coffee);
+    }
+
+    .action-circle-btn {
+        background: none;
+        border: none;
+        color: #a0aec0;
+        padding: 5px;
+        border-radius: 50%;
+        transition: 0.2s;
+        cursor: pointer;
+    }
+
+    .action-circle-btn:hover {
+        background: #f7fafc;
+        color: var(--danger-red);
+    }
+
+    /* --- Tabla Moderna --- */
+    .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+    }
+
+    .modern-table thead th {
+        background: none;
+        padding: 12px 20px;
+        color: #718096;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        border: none;
+    }
+
+    .modern-table tbody tr {
+        background: white;
+        transition: transform 0.2s;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .modern-table tbody tr:hover {
+        transform: scale(1.005);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .modern-table td {
+        padding: 16px 20px;
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .modern-table td:first-child {
+        border-left: 1px solid #f1f5f9;
+        border-radius: 12px 0 0 12px;
+    }
+
+    .modern-table td:last-child {
+        border-right: 1px solid #f1f5f9;
+        border-radius: 0 12px 12px 0;
+    }
+
+    /* Badges */
+    .badge-admin {
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .badge-yes {
+        background: #ebfbee;
+        color: #2f855a;
+    }
+
+    .badge-no {
+        background: #edf2f7;
+        color: #4a5568;
+    }
+
+    /* --- Modales --- */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(44, 24, 16, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-modern {
+        background: white;
+        width: 100%;
+        max-width: 450px;
+        border-radius: 20px;
+        padding: 2rem;
+        position: relative;
+    }
+
+    .modal-header-custom {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .icon-circle {
+        width: 60px;
+        height: 60px;
+        background: var(--paper-light);
+        color: var(--accent-gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        font-size: 1.5rem;
+    }
+
+    /* Switch Custom */
+    .admin-privilege-card {
+        background: var(--paper-light);
+        padding: 15px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+    }
+
+    .switch-custom {
+        position: relative;
+        display: inline-block;
+        width: 46px;
+        height: 24px;
+    }
+
+    .switch-custom input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e0;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked+.slider {
+        background-color: var(--accent-gold);
+    }
+
+    input:checked+.slider:before {
+        transform: translateX(22px);
+    }
+
+    .input-with-icon {
+        position: relative;
+    }
+
+    .input-with-icon i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--accent-gold);
+    }
+
+    .input-with-icon input {
+        width: 100%;
+        padding: 12px 12px 12px 45px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        outline: none;
+    }
+
+    /* --- ANIMACIÓN --- */
+    @keyframes slideInToast {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    /* --- CONTENEDOR (FORZADO) --- */
+    .toast-container {
+        position: fixed !important;
+        top: 20px !important;
+        right: 20px !important;
+        z-index: 2147483647 !important;
+        /* El máximo valor posible en navegadores */
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        pointer-events: none;
+        /* No bloquea clics en otros lados */
+    }
+
+    /* --- TOAST --- */
+    .toast {
+        pointer-events: auto;
+        /* Permite clics dentro del toast */
+        min-width: 300px;
+        padding: 16px;
+        border-radius: 8px;
+        color: #ffffff !important;
+        display: flex !important;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        animation: slideInToast 0.3s ease-out forwards;
+        font-family: Arial, sans-serif;
+    }
+
+    /* --- COLORES (CON !IMPORTANT) --- */
+    .toast.success {
+        background-color: #4caf50 !important;
+        border-left: 6px solid #2e7d32 !important;
+    }
+
+    .toast.error {
+        background-color: #f44336 !important;
+        border-left: 6px solid #c62828 !important;
+    }
+
+    .toast.warning {
+        background-color: #ff9800 !important;
+        border-left: 6px solid #ef6c00 !important;
+    }
+
+    .toast.info {
+        background-color: #2196f3 !important;
+        border-left: 6px solid #1565c0 !important;
+    }
+
+    .toast i {
+        font-size: 20px;
+        min-width: 24px;
+    }
+
+    .toast-content {
+        flex: 1;
+    }
+
+    .toast-title {
+        font-weight: bold;
+        font-size: 14px;
+        display: block;
+    }
+
+    .toast-message {
+        font-size: 13px;
+        opacity: 0.95;
+    }
+    /* --- BOTONES PRINCIPALES --- */
+    .btn-primary {
+        background-color: var(--primary-coffee);
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(74, 48, 34, 0.2);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--secondary-coffee);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(74, 48, 34, 0.3);
+    }
+
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .header-actions h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--secondary-coffee);
+        margin: 0;
+    }
+
+/* --- Paginación --- */
+    .pagination-container {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 1rem;
+    }
+    
+    .pagination-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: white;
+        padding: 5px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    
+    .btn-page {
+        background: none;
+        border: 1px solid var(--border-color);
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        color: var(--secondary-coffee);
+        transition: 0.2s;
+    }
+    
+    .btn-page:hover {
+        background: #f1f5f9;
+    }
+    
+    .page-text {
+        font-size: 0.9rem;
+        color: var(--secondary-coffee);
+        margin: 0 10px;
+        font-weight: 500;
+    }
+
+    /* --- Botones del Modal --- */
+    .modal-actions-custom {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 2rem;
+    }
+
+    .btn-cancel-light {
+        background: #f1f5f9;
+        color: #475569;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-cancel-light:hover { background: #e2e8f0; }
+
+    .btn-save-modern {
+        background: var(--primary-coffee);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .btn-save-modern:hover {
+        background: var(--secondary-coffee);
+        transform: translateY(-2px);
+    }
+
+    .swal2-container {
+        z-index: 99999 !important;
+    }
+</style>
+
+<div class="user-dashboard">
+    <div class="header-actions">
+        <h1>Módulos del Sistema</h1>
+
+        <div class="search-section-wrapper">
+            <div class="google-pill-container" id="searchPill">
+                <div class="main-search-part">
+                    <i class="fas fa-search search-icon-muted"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar módulo por nombre...">
+                </div>
+
+                <div class="pill-actions">
+                    <button id="btnClearFilters" class="action-circle-btn delete-btn" title="Limpiar">
+                        <i class="fas fa-eraser"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <button id="btnNewModulo" class="btn-primary" onclick="ModuloManager.openModal()">
+            <i class="fas fa-plus"></i> Nuevo
+        </button>
+    </div>
+
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th>Nombre del Módulo</th>
+                <th>Menú Padre</th>
+                <th>Ruta (URL)</th>
+                <th style="text-align: center;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="moduloTableBody">
+        </tbody>
+    </table>
+
+    <div class="pagination-container">
+        <div class="pagination-controls">
+            <button id="btnFirst" class="btn-page"><i class="fas fa-angle-double-left"></i></button>
+            <button id="btnPrev" class="btn-page"><i class="fas fa-angle-left"></i></button>
+            <span id="currentPageIndicator" class="page-text">Página 1 de 1</span>
+            <button id="btnNext" class="btn-page"><i class="fas fa-angle-right"></i></button>
+            <button id="btnLast" class="btn-page"><i class="fas fa-angle-double-right"></i></button>
+        </div>
+    </div>
+</div>
+
+<div id="moduloModal" class="modal">
+    <div class="modal-content modal-modern">
+        <div class="modal-header-custom">
+            <div class="icon-circle">
+                <i class="fas fa-puzzle-piece"></i>
+            </div>
+            <h2 id="modalTitle">Nuevo Módulo</h2>
+        </div>
+
+        <form id="moduloForm">
+            <input type="hidden" name="id">
+
+            <div class="form-body-custom">
+                <div class="form-group-custom">
+                    <label class="label-hint">Nombre del Módulo</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-layer-group"></i>
+                        <input type="text" name="strNombreModulo" id="strNombreModulo" placeholder="Ej: Usuarios"
+                            required>
+                    </div>
+                </div>
+
+                <div class="form-group-custom">
+                    <label class="label-hint"
+                        style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Menú Padre</span>
+                        <span id="menuActions" style="display: none; gap: 15px; font-size: 12px;">
+                            <a href="#" onclick="ModuloManager.editMenu(event)"
+                                style="color: #3b82f6; text-decoration: none;">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a href="#" onclick="ModuloManager.deleteMenu(event)"
+                                style="color: #ef4444; text-decoration: none;">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </a>
+                        </span>
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-folder"></i>
+                        <input type="text" name="nombreMenu" id="nombreMenu" list="menusList"
+                            placeholder="Seleccione o escriba un menú..." required autocomplete="off">
+                        <datalist id="menusList"></datalist>
+                    </div>
+                </div>
+                <div class="form-group-custom">
+                    <label class="label-hint">Ruta / URL</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-link"></i>
+                        <input type="text" name="strRuta" id="strRuta" placeholder="Ej: /usuarios">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions-custom">
+                <button type="button" onclick="ModuloManager.closeModal()" class="btn-cancel-light">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn-save-modern">
+                    <span>Guardar Cambios</span>
+                    <i class="fas fa-check"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="deleteModal" class="modal">
+    <div class="modal-content confirm-delete">
+        <div class="warn-icon" style="font-size: 50px; margin-bottom: 15px;">⚠️</div>
+        <h2>¿Estás seguro?</h2>
+        <p>Esta acción no se puede deshacer. Se eliminará el módulo permanentemente del sistema.</p>
+        <div class="modal-actions" style="justify-content: center;">
+            <button type="button" onclick="ModuloManager.closeDeleteModal()" class="btn-secondary">No, cancelar</button>
+            <button type="button" id="confirmDeleteBtn" class="btn-danger">Sí, eliminar</button>
+        </div>
+    </div>
+</div>
+
+<script id="permisos-data" type="application/json">
+    {{permisos_json | safe}}
+</script>
+
+<script>
+    // Inicialización de permisos y Lucide
+    const permisosBackend = JSON.parse(document.getElementById('permisos-data').textContent || '{}');
+    const PERMISOS_MODULO = {
+        canAdd: !!permisosBackend.bitAgregar,
+        canEdit: !!permisosBackend.bitEditar,
+        canDelete: !!permisosBackend.bitEliminar
+    };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/static/js/modulos.js"></script>

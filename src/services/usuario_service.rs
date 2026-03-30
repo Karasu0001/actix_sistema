@@ -1,112 +1,110 @@
 use sqlx::PgPool;
 use crate::models::usuario::Usuario;
-use sha2::{ Sha256, Digest };
+use crate::controllers::usuario_controller::UsuarioDTO;
+use sha2::{Sha256, Digest};
+use chrono::NaiveDate;
 
-pub struct UsuarioService;
+// 🔍 Obtener todos
+pub async fn get_all(pool: &PgPool) -> Result<Vec<Usuario>, sqlx::Error> {
+    let usuarios = sqlx::query_as::<_, Usuario>(
+        "SELECT * FROM usuario ORDER BY id DESC"
+    )
+    .fetch_all(pool)
+    .await?;
+    Ok(usuarios)
+}
 
-impl UsuarioService {
-    pub async fn get_all_users(pool: &PgPool) -> Vec<Usuario> {
-        println!("\n--- INICIANDO GET_ALL_USERS (NEON DB) ---");
+// 🔍 Obtener por ID
+pub async fn get_by_id(pool: &PgPool, id: i32) -> Result<Option<Usuario>, sqlx::Error> {
+    let usuario = sqlx::query_as::<_, Usuario>(
+        "SELECT * FROM usuario WHERE id = $1"
+    )
+    .bind(id)
+    .fetch_optional(pool)
+    .await?;
+    Ok(usuario)
+}
 
-        let result: Result<Vec<Usuario>, sqlx::Error> = sqlx
-            ::query_as::<_, Usuario>(
-                r#"SELECT id, usuario, email, password, 
-               TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at 
-               FROM usuarios ORDER BY id DESC"#
-            )
-            .fetch_all(pool).await;
-
-        match result {
-            Ok(users) => {
-                println!(" DEBUG: Usuarios encontrados: {}", users.len());
-                users
-            }
-            Err(e) => {
-                // Este print te dirá exactamente si hay otro error de mapeo
-                println!(" ERROR en get_all_users: {}", e);
-                vec![]
-            }
-        }
-    }
-
-    pub async fn register_user(pool: &PgPool, mut user: Usuario) -> (bool, String) {
-        // Corregimos la inferencia del hasher
-        if let Some(ref pwd) = user.password {
+// 💾 Guardar (Insert / Update unificado)
+pub async fn save(
+    pool: &PgPool,
+    data: UsuarioDTO,
+) -> Result<String, sqlx::Error> {
+    
+    // Generar Hash SHA256 si viene contraseña
+    let pwd_hash = if let Some(ref pwd) = data.strPwd {
+        if !pwd.trim().is_empty() {
             let mut hasher = Sha256::new();
-            let bytes: &[u8] = pwd.as_bytes(); // Forzamos el tipo a slice de bytes
-            hasher.update(bytes);
-            user.password = Some(format!("{:x}", hasher.finalize()));
+            hasher.update(pwd.as_bytes());
+            Some(hex::encode(hasher.finalize()))
+        } else {
+            None
         }
+    } else {
+        None
+    };
 
-        let query =
-            r#"
-            INSERT INTO usuarios (usuario, email, password, created_at) 
-            VALUES ($1, $2, $3, NOW())
-        "#;
+    if let Some(id_val) = data.id {
+        // ✅ SOLUCIÓN AQUÍ: Se agregó str_imagen_path=COALESCE($10, str_imagen_path)
+        sqlx::query(
+            "UPDATE usuario SET 
+                nombre=$1, 
+                apellido_p=$2, 
+                apellido_m=$3, 
+                id_perfil=$4, 
+                fecha_nacimiento=$5, 
+                id_estado_usuario=$6, 
+                id_sexo=$7, 
+                str_correo=$8, 
+                str_numero_celular=$9,
+                str_imagen_path=COALESCE($10, str_imagen_path)
+             WHERE id=$11"
+        )
+        .bind(&data.nombre)
+        .bind(&data.apellidoP)
+        .bind(&data.apellidoM)
+        .bind(data.idPerfil)
+        .bind(data.fechaNacimiento)
+        .bind(data.idEstadoUsuario)
+        .bind(data.idSexo)
+        .bind(&data.strCorreo)
+        .bind(&data.strNumeroCelular)
+        .bind(&data.strImagenPath) // Este es $10
+        .bind(id_val)              // Este es $11
+        .execute(pool)
+        .await?;
 
-        let result = sqlx
-            ::query(query)
-            .bind(&user.usuario)
-            .bind(&user.email)
-            .bind(&user.password)
-            .execute(pool).await;
+        Ok("Usuario actualizado exitosamente".to_string())
+    } else {
+        // INSERT (Queda igual, ya lo tenías bien)
+        sqlx::query(
+            r#"INSERT INTO usuario 
+            (nombre, apellido_p, apellido_m, id_perfil, str_pwd, fecha_nacimiento, id_estado_usuario, id_sexo, str_correo, str_numero_celular, str_imagen_path, fecha_registro) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, CURRENT_TIMESTAMP)"#
+        )
+        .bind(&data.nombre)
+        .bind(&data.apellidoP)
+        .bind(&data.apellidoM)
+        .bind(data.idPerfil)
+        .bind(pwd_hash)
+        .bind(data.fechaNacimiento)
+        .bind(data.idEstadoUsuario.unwrap_or(1))
+        .bind(data.idSexo)
+        .bind(&data.strCorreo)
+        .bind(&data.strNumeroCelular)
+        .bind(&data.strImagenPath) 
+        .execute(pool)
+        .await?;
 
-        match result {
-            Ok(_) => (true, "Usuario registrado exitosamente".to_string()),
-            Err(e) => {
-                let error_msg = e.to_string();
-                if error_msg.contains("usuarios_email_key") || error_msg.contains("23505") {
-                    return (false, "Este correo electrónico ya está registrado".to_string());
-                }
-                (false, format!("Error en base de datos: {}", error_msg))
-            }
-        }
+        Ok("Usuario registrado exitosamente".to_string())
     }
+}
 
-    pub async fn get_user_by_id(pool: &PgPool, user_id: i32) -> Option<Usuario> {
-        let result: Result<Option<Usuario>, sqlx::Error> = sqlx
-            ::query_as::<_, Usuario>(
-                r#"SELECT id, usuario, email, password, 
-               TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at 
-               FROM usuarios WHERE id = $1"#
-            )
-            .bind(user_id)
-            .fetch_optional(pool).await;
-
-        match result {
-            Ok(u) => u,
-            Err(e) => {
-                println!(" ERROR en get_user_by_id: {}", e);
-                None
-            }
-        }
-    }
-
-    pub async fn update_existing_user(pool: &PgPool, user: Usuario) -> (bool, String) {
-        let query = "UPDATE usuarios SET usuario=$1, email=$2 WHERE id=$3";
-
-        let result = sqlx
-            ::query(query)
-            .bind(&user.usuario)
-            .bind(&user.email)
-            .bind(user.id)
-            .execute(pool).await;
-
-        match result {
-            Ok(_) => (true, "Usuario actualizado correctamente".to_string()),
-            Err(e) => (false, e.to_string()),
-        }
-    }
-
-    pub async fn delete_user(pool: &PgPool, user_id: i32) -> (bool, String) {
-        let result = sqlx
-            ::query("DELETE FROM usuarios WHERE id = $1")
-            .bind(user_id)
-            .execute(pool).await;
-
-        match result {
-            Ok(_) => (true, "Usuario eliminado correctamente".to_string()),
-            Err(e) => (false, e.to_string()),
-        }
-    }
+// ❌ Eliminar
+pub async fn delete(pool: &PgPool, id: i32) -> Result<String, sqlx::Error> {
+    sqlx::query("DELETE FROM usuario WHERE id = $1")
+        .bind(id)
+        .execute(pool)
+        .await?;
+    Ok("Usuario eliminado exitosamente".to_string())
 }

@@ -1,0 +1,418 @@
+<style>
+    :root {
+        --primary-coffee: #4a3728;
+        --secondary-coffee: #2c1810;
+        --paper-light: #fcfaf7;
+        --accent-gold: #c5a059;
+        --border-color: #e2d1c3;
+        --danger-red: #8b2626;
+    }
+
+    /* Navegación Estilo Biblioteca */
+    .library-nav {
+        padding: 20px;
+        background-color: #fff;
+        border-bottom: 2px solid var(--border-color);
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .library-nav a {
+        color: var(--primary-coffee);
+        text-decoration: none;
+        font-style: italic;
+    }
+
+    .header-section {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    /* Contenedor Principal (Tabla) */
+    .library-card {
+        background: white;
+        padding: 25px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border-radius: 4px;
+    }
+
+    /* Buscador Estilo "Pill" */
+    .search-wrapper {
+        max-width: 800px;
+        margin: 0 auto 30px auto;
+    }
+
+    .google-pill {
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 50px;
+        transition: all 0.3s;
+    }
+
+    .google-pill:focus-within {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: var(--accent-gold);
+    }
+
+    .google-pill input {
+        border: none;
+        outline: none;
+        width: 100%;
+        margin-left: 10px;
+        background: transparent;
+    }
+
+    /* Tabla Moderna */
+    .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+    }
+
+    .modern-table thead th {
+        border-bottom: 2px solid var(--accent-gold);
+        color: var(--primary-coffee);
+        padding: 12px;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
+
+    .modern-table tbody tr {
+        background-color: #fff;
+        transition: transform 0.2s;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+    }
+
+    .modern-table tbody tr:hover {
+        transform: scale(1.005);
+        background-color: #fafafa;
+    }
+
+    .modern-table td {
+        padding: 15px;
+        border-top: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+    }
+
+    /* Imagen en tabla */
+    .avatar-table {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid var(--border-color);
+    }
+
+    /* Botones */
+    .btn-coffee {
+        background-color: var(--primary-coffee);
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 4px;
+        transition: 0.3s;
+    }
+
+    .btn-coffee:hover {
+        background-color: var(--secondary-coffee);
+        color: white;
+    }
+
+    .action-btn {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        transition: 0.3s;
+        margin: 0 3px;
+    }
+
+    .edit-btn {
+        background-color: #e2d1c3;
+        color: var(--primary-coffee);
+    }
+
+    .delete-btn {
+        background-color: #f8d7da;
+        color: var(--danger-red);
+    }
+
+    /* Modales */
+    .custom-modal {
+        background-color: var(--paper-light);
+        border: 2px solid var(--primary-coffee);
+        border-radius: 0;
+    }
+
+    .modal-header {
+        border-bottom: 1px dashed var(--primary-coffee);
+        background-color: white;
+    }
+
+    .form-control-library, .form-select-library {
+        border: 1px solid var(--border-color);
+        border-radius: 0;
+        padding: 10px;
+        background-color: white;
+    }
+
+    .form-control-library:focus, .form-select-library:focus {
+        border-color: var(--accent-gold);
+        box-shadow: none;
+        background-color: #fff;
+    }
+
+    /* Vista previa de imagen */
+    .avatar-preview {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--accent-gold);
+    }
+
+    /* Botón Flotante (Nuevo Usuario) */
+    .fab-user {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 65px;
+        height: 65px;
+        background-color: var(--primary-coffee);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--secondary-coffee);
+        cursor: pointer;
+        z-index: 1000;
+    }
+</style>
+
+<div class="container">
+    <div class="header-section">
+        <h2>Archivo de Lectores</h2>
+        <p class="text-muted italic"><i>"Organizando la comunidad de la Biblioteca Café"</i></p>
+        <hr style="width: 80px; margin: 15px auto; border-color: var(--accent-gold); border-width: 2px;">
+    </div>
+
+    <div class="search-wrapper mb-4">
+        <div class="row g-2 align-items-center bg-white p-3 border rounded shadow-sm">
+            <div class="col-md-5">
+                <div class="google-pill mb-0">
+                    <i class="fas fa-search text-muted"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar por nombre o apellidos...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-white border-end-0 text-muted border-color"><i class="fas fa-calendar-alt"></i></span>
+                    <input type="date" id="dateFrom" class="form-control border-start-0 border-color" title="Nacimiento Desde">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-white border-end-0 text-muted border-color"><i class="fas fa-calendar-alt"></i></span>
+                    <input type="date" id="dateTo" class="form-control border-start-0 border-color" title="Nacimiento Hasta">
+                </div>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-sm btn-outline-secondary w-100 h-100" id="btnClearFilters" title="Limpiar Filtros">
+                    <i class="fas fa-eraser"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="library-card">
+        <div class="table-responsive">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Lector Completo</th>
+                        <th>Correo</th>
+                        <th>Sexo</th>
+                        <th>Celular</th>
+                        <th>Perfil</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <small class="text-muted italic" id="currentPageIndicator">Cargando archivo...</small>
+            <nav aria-label="Navegación de lectores">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item"><button id="btnFirst" class="page-link text-dark"><i class="fas fa-angle-double-left"></i></button></li>
+                    <li class="page-item"><button id="btnPrev" class="page-link text-dark"><i class="fas fa-angle-left"></i></button></li>
+                    <li class="page-item"><button id="btnNext" class="page-link text-dark"><i class="fas fa-angle-right"></i></button></li>
+                    <li class="page-item"><button id="btnLast" class="page-link text-dark"><i class="fas fa-angle-double-right"></i></button></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<button id="btnNewUser" class="fab-user" onclick="UserManager.openModal()" title="Nuevo Lector">
+    <i class="fas fa-user-plus"></i>
+</button>
+
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content custom-modal">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Ficha de Lector</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="userForm" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="id" id="userId">
+
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label small text-muted">Nombre(s)</label>
+                            <input type="text" name="Nombre" id="name" class="form-control form-control-library" placeholder="Ej: Gabriel" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small text-muted">Apellido Paterno</label>
+                            <input type="text" name="ApellidoP" id="ap_paterno" class="form-control form-control-library" placeholder="García" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small text-muted">Apellido Materno</label>
+                            <input type="text" name="ApellidoM" id="ap_materno" class="form-control form-control-library" placeholder="Márquez">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small text-muted">Correo Electrónico</label>
+                            <input type="email" name="strCorreo" id="emailInput" class="form-control form-control-library" placeholder="lector@ejemplo.com" required>
+                            <div id="error_email" class="text-danger small mt-1"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small text-muted">Número Celular</label>
+                            <input type="text" name="strNumeroCelular" id="phoneInput" class="form-control form-control-library" placeholder="Ej: 5512345678">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small text-muted">Fecha de Nacimiento</label>
+                            <input type="date" name="FechaNacimiento" id="birthdateInput" class="form-control form-control-library" required>
+                            <div id="error_birthdate" class="text-danger small mt-1"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small text-muted">Sexo</label>
+                            <select name="idSexo" id="sexoSelect" class="form-select form-select-library" required>
+                                <option value="">Seleccione sexo...</option>
+                            </select>
+                            <div id="error_sexo" class="text-danger small mt-1"></div>
+                        </div>
+
+                        <div class="col-md-4 mb-3" id="passwordGroup">
+                            <label class="form-label small text-muted">Contraseña</label>
+                            <input type="password" name="strPwd" id="passwordInput" class="form-control form-control-library" placeholder="••••••••">
+                            <small class="text-muted italic" style="font-size: 0.75rem;">Dejar en blanco para conservar.</small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label small text-muted">Perfil de Acceso</label>
+                            <select name="idPerfil" id="deptoSelect" class="form-select form-select-library" required>
+                                <option value="">Seleccione un perfil...</option>
+                            </select>
+                            <div id="error_depto" class="text-danger small mt-1"></div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label small text-muted">Estado</label>
+                            <select name="idEstadoUsuario" id="estadoSelect" class="form-select form-select-library" required>
+                                <option value="">Seleccione un estado...</option>
+                            </select>
+                            <div id="error_estado" class="text-danger small mt-1"></div>
+                        </div>
+
+                        <div class="col-md-12 mb-2 mt-2 border p-3 rounded bg-light">
+                            <label class="form-label small text-muted fw-bold">Foto de Perfil</label>
+                            <div class="d-flex align-items-center gap-3">
+                                <input type="file" id="imagenInput" name="imagenInput" class="form-control form-control-library" accept=".jpg,.jpeg,.png,.webp">
+                                <div id="previewContainer" class="d-none">
+                                    <img id="previewImg" src="" alt="Vista previa" class="avatar-preview shadow-sm">
+                                </div>
+                            </div>
+                            <small id="fileError" class="text-danger d-none mt-1">
+                                <i class="fas fa-exclamation-circle me-1"></i> Formato no válido. Use JPG, PNG o WebP.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px dashed var(--primary-coffee);">
+                    <button type="button" class="btn btn-link text-decoration-none text-muted" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-coffee">Guardar en Archivo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content custom-modal text-center">
+            <div class="modal-body p-4">
+                <i class="fas fa-exclamation-triangle text-danger mb-3" style="font-size: 2rem;"></i>
+                <h5>¿Retirar Lector?</h5>
+                <p class="small text-muted">Esta acción no se puede deshacer. Se eliminará al usuario permanentemente.</p>
+                <div class="d-flex justify-content-center gap-2 mt-3">
+                    <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal" onclick="UserManager.closeDeleteModal()">No, mantener</button>
+                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger btn-sm">Sí, retirar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="permisos-data" type="application/json">
+    {{permisos_json | safe}}
+</script>
+
+<script>
+    const jsonString = document.getElementById('permisos-data').textContent;
+    const permisosBackend = JSON.parse(jsonString || '{}');
+    
+    function tienePermiso(valor) {
+        return valor === true || valor === 1 || valor === "true" || valor === "True";
+    }
+
+    const PERMISOS_MODULO = {
+        canAdd: tienePermiso(permisosBackend.bitAgregar),
+        canEdit: tienePermiso(permisosBackend.bitEditar),
+        canDelete: tienePermiso(permisosBackend.bitEliminar)
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Si no tiene permiso de agregar...
+        if (!PERMISOS_MODULO.canAdd) {
+            // Pon aquí el ID exacto que tenga tu botón flotante en el HTML
+            const btnAgregar = document.getElementById('btnNewUser'); 
+            
+            if (btnAgregar) {
+                // Lo ocultamos visualmente
+                btnAgregar.style.display = 'none'; 
+                // Opcional: eliminarlo por completo del DOM por seguridad extra
+                // btnAgregar.remove(); 
+            }
+        }
+    });
+</script>
+
+<script src="/static/js/users.js"></script>
