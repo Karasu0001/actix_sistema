@@ -13,7 +13,8 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #E9ECEF; 
+            /* Color de fondo beige suave */
+            background-color: #F7F1E1; 
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -23,14 +24,15 @@
             border: none;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(44, 62, 80, 0.15); 
+            /* Sombra en tono marrón suave */
+            box-shadow: 0 15px 35px rgba(139, 115, 85, 0.15); 
         }
 
         .login-left {
-            /* Fondo de biblioteca */
-            background: linear-gradient(rgba(31, 45, 61, 0.85), rgba(31, 45, 61, 0.85)), 
+            /* Fondo de biblioteca con superposición de marrón cálido */
+            background: linear-gradient(rgba(111, 78, 55, 0.85), rgba(111, 78, 55, 0.85)), 
                         url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') center/cover;
-            color: #F8F9FA;
+            color: #FFFFFF;
             padding: 3.5rem;
             display: flex;
             flex-direction: column;
@@ -39,7 +41,8 @@
         }
 
         .login-left h4 {
-            color: #D3DCE6;
+            /* Tono beige muy claro para el título h4 */
+            color: #FDF6E3;
             font-weight: 500;
         }
 
@@ -60,17 +63,23 @@
 
         .login-right h2 {
             font-weight: 600;
-            color: #2C3E50; 
+            /* Marrón chocolate oscuro para el título h2 */
+            color: #5D4037; 
         }
 
         .input-group-text {
-            background-color: #F4F6F8;
-            color: #7F8C8D; 
+            /* Fondo crema claro para el grupo de entrada */
+            background-color: #F9F5F1;
+            /* Icono en marrón suave */
+            color: #8D6E63; 
             border-radius: 10px 0 0 10px;
         }
 
         .form-control {
-            background-color: #F4F6F8;
+            /* Fondo crema claro para el input */
+            background-color: #F9F5F1;
+            /* Texto en marrón oscuro */
+            color: #5D4037; 
             border-radius: 0 10px 10px 0;
             padding: 0.75rem 1rem;
         }
@@ -78,19 +87,23 @@
         .form-control:focus {
             box-shadow: none;
             background-color: #FFF;
-            border: 1px solid #BDC3C7;
+            /* Borde en marrón suave al hacer foco */
+            border: 1px solid #D7CCC8;
         }
 
         .text-library {
-            color: #2980B9 !important;
+            /* Marrón medio para enlaces */
+            color: #6D4C41 !important;
         }
 
         a.text-library:hover {
-            color: #1A5276 !important;
+            /* Marrón más oscuro al pasar el mouse por los enlaces */
+            color: #3E2723 !important;
         }
 
         .btn-sign-in {
-            background-color: #2C3E50; 
+            /* Marrón café para el botón */
+            background-color: #6F4E37; 
             color: white;
             border: none;
             border-radius: 10px;
@@ -100,21 +113,25 @@
         }
 
         .btn-sign-in:hover {
-            background-color: #1A252F; 
+            /* Marrón más oscuro al pasar el mouse por el botón */
+            background-color: #5D4037; 
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3);
+            /* Sombra en tono marrón café */
+            box-shadow: 0 5px 15px rgba(111, 78, 55, 0.3);
         }
 
         .btn-sign-in:disabled {
-            background-color: #95A5A6;
+            /* Marrón muy claro para el botón deshabilitado */
+            background-color: #D7CCC8;
             transform: none;
             box-shadow: none;
         }
 
         .loader {
             display: none;
-            border: 2px solid #E9ECEF;
+            /* Borde del cargador en beige suave */
+            border: 2px solid #F7F1E1;
             border-top: 2px solid transparent;
             border-radius: 50%;
             width: 18px;
@@ -208,9 +225,10 @@
 
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
+        // Inicializar iconos
         lucide.createIcons();
 
-        // Mostrar/ocultar contraseña
+        // Lógica para mostrar/ocultar contraseña
         const togglePassword = document.querySelector('#togglePassword');
         const passwordInput = document.querySelector('#password');
         const eyeIcon = document.querySelector('#eyeIcon');
@@ -224,10 +242,11 @@
             lucide.createIcons();
         });
 
-        // Envío del formulario
+        //validación y envío al servidor
         document.getElementById('formLogin').addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            // const captchaResponse = "bypass_local";
             const captchaResponse = grecaptcha.getResponse();
             const alertError = document.getElementById('alertError');
 
@@ -262,7 +281,7 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    btnSubmit.style.background = '#27AE60'; 
+                    btnSubmit.style.background = '#27AE60'; // Verde éxito
                     btnText.innerText = '¡Acceso concedido!';
                     loader.style.display = 'none';
                     setTimeout(() => { window.location.href = '/'; }, 800);
