@@ -452,7 +452,8 @@ const UserManager = {
                     // Construir cadena HTML con todas las opciones
                     let optionsHtml = '';
                     perfiles.forEach(perfil => {
-                        optionsHtml += `<option value="${perfil.id}">${perfil.strnombreperfil}</option>`;
+                        console.log("Perfil individual:", perfil); // DEBUG
+                        optionsHtml += `<option value="${perfil.id}">${perfil.strNombrePerfil}</option>`;
                     });
                     
                     deptoSelect.innerHTML = optionsHtml;
