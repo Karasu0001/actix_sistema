@@ -439,26 +439,30 @@ const UserManager = {
         }
 
         const deptoSelect = document.getElementById('deptoSelect');
-        if (deptoSelect && deptoSelect.options.length <= 1) {
+        if (deptoSelect) {
             try {
                 const res = await fetch('/api/perfil');
                 if (res.ok) {
                     const perfiles = await res.json();
                     console.log("✅ Perfiles cargados desde la BD:", perfiles);
                     
+                    // Limpiar opciones existentes
+                    deptoSelect.innerHTML = '';
+                    
+                    // Construir cadena HTML con todas las opciones
+                    let optionsHtml = '';
                     perfiles.forEach(perfil => {
-                        const option = document.createElement('option');
-                        option.value = perfil.id;
-                        option.textContent = perfil.strnombreperfil;
-                        deptoSelect.appendChild(option);
+                        optionsHtml += `<option value="${perfil.id}">${perfil.strnombreperfil}</option>`;
                     });
+                    
+                    deptoSelect.innerHTML = optionsHtml;
                 } else {
                     console.warn("⚠️ No se pudieron cargar los perfiles, usando defaults");
-                    deptoSelect.innerHTML += `<option value="1">Administrador</option><option value="2">Operador</option>`;
+                    deptoSelect.innerHTML = `<option value="1">Administrador</option><option value="2">Operador</option>`;
                 }
             } catch (e) {
                 console.error("❌ Error al cargar perfiles:", e);
-                deptoSelect.innerHTML += `<option value="1">Administrador</option><option value="2">Operador</option>`;
+                deptoSelect.innerHTML = `<option value="1">Administrador</option><option value="2">Operador</option>`;
             }
         }
 
