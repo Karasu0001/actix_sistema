@@ -441,7 +441,7 @@ const UserManager = {
         const deptoSelect = document.getElementById('deptoSelect');
         if (deptoSelect && deptoSelect.options.length <= 1) {
             try {
-                const res = await fetch('/api/perfiles');
+                const res = await fetch('/api/perfil');
                 if (res.ok) {
                     const perfiles = await res.json();
                     console.log("✅ Perfiles cargados desde la BD:", perfiles);
