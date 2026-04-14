@@ -432,8 +432,7 @@ const UserManager = {
         setTimeout(() => toast.remove(), 4000);
     },
 
-    // FUNCIÓN EXTRA: Puedes llenarla llamando a un endpoint en el futuro
-    loadCatalogs() {
+    async loadCatalogs() {
         const sexoSelect = document.getElementById('sexoSelect');
         if (sexoSelect && sexoSelect.options.length <= 1) {
             sexoSelect.innerHTML += `<option value="1">Masculino</option><option value="2">Femenino</option><option value="3">No Binario</option>`;
@@ -441,7 +440,26 @@ const UserManager = {
 
         const deptoSelect = document.getElementById('deptoSelect');
         if (deptoSelect && deptoSelect.options.length <= 1) {
-            deptoSelect.innerHTML += `<option value="1">Administrador</option><option value="2">Operador</option>`;
+            try {
+                const res = await fetch('/api/perfiles');
+                if (res.ok) {
+                    const perfiles = await res.json();
+                    console.log("✅ Perfiles cargados desde la BD:", perfiles);
+                    
+                    perfiles.forEach(perfil => {
+                        const option = document.createElement('option');
+                        option.value = perfil.id;
+                        option.textContent = perfil.strnombreperfil;
+                        deptoSelect.appendChild(option);
+                    });
+                } else {
+                    console.warn("⚠️ No se pudieron cargar los perfiles, usando defaults");
+                    deptoSelect.innerHTML += `<option value="1">Administrador</option><option value="2">Operador</option>`;
+                }
+            } catch (e) {
+                console.error("❌ Error al cargar perfiles:", e);
+                deptoSelect.innerHTML += `<option value="1">Administrador</option><option value="2">Operador</option>`;
+            }
         }
 
         const estadoSelect = document.getElementById('estadoSelect');
