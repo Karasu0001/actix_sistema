@@ -22,6 +22,9 @@ const UserManager = {
         this.previewImg = document.getElementById('previewImg');
         this.fileError = document.getElementById('fileError');
 
+        // Campo teléfono
+        this.phoneInput = document.getElementById('phoneInput');
+
         // Paginación
         this.btnFirst = document.getElementById('btnFirst');
         this.btnPrev = document.getElementById('btnPrev');
@@ -49,6 +52,13 @@ const UserManager = {
         // Previsualización de imagen
         if (this.imagenInput) {
             this.imagenInput.addEventListener('change', (e) => this.handleImagePreview(e));
+        }
+
+        // Validación de teléfono: solo dígitos, máximo 10
+        if (this.phoneInput) {
+            this.phoneInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+            });
         }
 
         // Paginación
@@ -331,7 +341,8 @@ const UserManager = {
         backendFormData.append('apellidoP', rawFormData.get('ApellidoP'));      // ✅ camelCase
         backendFormData.append('apellidoM', rawFormData.get('ApellidoM'));      // ✅ camelCase
         backendFormData.append('strCorreo', rawFormData.get('strCorreo'));
-        backendFormData.append('strNumeroCelular', rawFormData.get('strNumeroCelular'));
+        const cleanedPhone = rawFormData.get('strNumeroCelular')?.toString().replace(/[^0-9]/g, '').slice(0, 10) || '';
+        backendFormData.append('strNumeroCelular', cleanedPhone);
         backendFormData.append('fechaNacimiento', rawFormData.get('FechaNacimiento'));
         backendFormData.append('idSexo', rawFormData.get('idSexo'));            // ✅ camelCase
         backendFormData.append('idPerfil', rawFormData.get('idPerfil'));        // ✅ camelCase
